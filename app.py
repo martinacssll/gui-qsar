@@ -7,7 +7,7 @@ Usage:
     streamlit run app.py
 
 Each model must be a .pkl or .joblib file saved with pickle/joblib,
-trained only on Morgan fingerprint (2048 bit, radius 2).
+trained only on Morgan fingerprint (2048 bit, radius 3).
 """
 
 import streamlit as st
@@ -46,10 +46,10 @@ def load_model(path: str):
             return pickle.load(f)
 
 # ----------------------------------------------------------------------
-# 2. cOMPUTE FEATURE (Morgan FP 2048 bit r=2)
+# 2. cOMPUTE FEATURE (Morgan FP 2048 bit r=3)
 # ----------------------------------------------------------------------
 FP_BITS = 2048
-FP_RADIUS = 2
+FP_RADIUS = 3
 
 
 def compute_features(smiles: str) -> np.ndarray | None:
