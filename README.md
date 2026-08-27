@@ -1,7 +1,7 @@
-# QSAR Predictor (Ketcher + Random Forest)
+# QSAR GUI (Ketcher + Random Forest / KNN)
 
-GUI in Streamlit: disegni una molecola in Ketcher, l'app calcola il
-Morgan fingerprint (2048 bit, raggio 2) e lo passa al modello scelto per ottenere la predizione.
+GUI in Streamlit: draw a molecule, app computes
+Morgan fingerprint (2048 bit, radius 3) and passes it to the selected model to compute the prediction (pIC50).
 
 ## Setup
 
@@ -9,41 +9,28 @@ Morgan fingerprint (2048 bit, raggio 2) e lo passa al modello scelto per ottener
 pip install -r requirements.txt
 ```
 
-## Collegare i tuoi 4 modelli
+## Connect the 4 models
 
-L'app permette di scegliere tra 4 modelli (stesso target/dataset,
-diverso splitting e modello). Crea una cartella `models/` accanto a `app.py` e
-mettici i 4 file, con questi nomi (o cambia i path nel dizionario
-`MODELS` in cima ad `app.py`):
+The app allows to choose between 4 models (same dataset,
+different splitting and model), contained in the folder `models/`.
 
-```
-models/model\_random\_split.pkl
-models/model\_scaffold\_split.pkl
-models/model\_temporal\_split.pkl
-models/model\_cluster\_split.pkl
-```
+A dropdown menu allows to choose which model to use to make the prediction.
+If a file is missing, the app allows to upload it for the current session.
+A checkbox "Compare all 4 models" shows in a table the prediction of each model
+on the same molecule.
 
-Un menu a tendina permette di scegliere quale usare per la predizione.
-Se un file manca, l'app mostra un uploader per caricarlo per quella
-sessione. C'è anche una checkbox "Confronta tutti e 4 i modelli" che
-mostra in una tabella la predizione di ciascuno sulla stessa molecola.
-
-## Avvio
+## Usage
 
 ```bash
 streamlit run app.py
 ```
 
-Si apre nel browser: disegni la molecola, premi **Apply** dentro
-Ketcher per confermare la struttura, e la predizione appare a destra.
+It opens in the browser: draw the molecule, press **Apply** in
+Ketcher to confirm the structure, and the prediction is shown on the right.
 
-## Se il tuo modello usa feature diverse
+## Features used by the models
 
-La funzione `compute\_features()` in `app.py` genera solo il Morgan
-fingerprint (2048 bit, raggio 2). Se in futuro un modello usasse feature
-aggiuntive, modifica quella funzione di conseguenza — l'ordine delle
-colonne deve corrispondere esattamente a quello usato per allenare il
-modello, altrimenti la predizione sarà silenziosamente sbagliata.
-
+The function `compute\_features()` in `app.py` generates Morgan
+fingerprints (2048 bit, radius 3).
 
 
