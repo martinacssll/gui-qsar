@@ -1,5 +1,5 @@
 streamlit>=1.30
-streamlit-ketcher>=0.0.4
+streamlit-ketcher==0.0.1
 rdkit>=2023.9.1
 scikit-learn
 joblib
