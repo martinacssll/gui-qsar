@@ -1,6 +1,6 @@
 # QSAR GUI (Ketcher + Random Forest / KNN)
 
-GUI in Streamlit: draw a molecule, app computes
+GUI in Streamlit: draw a molecule, the app computes
 Morgan fingerprint (2048 bit, radius 3) and passes it to the selected model to compute the prediction (pIC50).
 
 ## Setup
