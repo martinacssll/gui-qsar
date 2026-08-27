@@ -52,20 +52,18 @@ FP_BITS = 2048
 FP_RADIUS = 3
 
 
-_morgan_gen = rdFingerprintGenerator.GetMorganGenerator(radius=FP_RADIUS, fpSize=FP_BITS)
- 
- 
 def compute_features(smiles: str) -> np.ndarray | None:
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
         return None
  
-    fp = _morgan_gen.GetFingerprint(mol)
+    fp = rdMolDescriptors.GetMorganFingerprintAsBitVect(
+        mol, radius=FP_RADIUS, nBits=FP_BITS
+    )
     fp_arr = np.zeros((FP_BITS,), dtype=int)
     Chem.DataStructs.ConvertToNumpyArray(fp, fp_arr)
  
     return fp_arr.reshape(1, -1)
-
 
 # ----------------------------------------------------------------------
 # 3. GUI
