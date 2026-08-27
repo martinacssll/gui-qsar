@@ -1,13 +1,13 @@
 """
-GUI QSAR: disegna una molecola in Ketcher e ottieni la predizione
-del tuo modello Random Forest (scikit-learn).
+GUI QSAR: draw a molecule in Ketcher and get a prediction
+from different QSAR models
 
-Avvio:
+Usage:
     pip install streamlit streamlit-ketcher rdkit-pypi scikit-learn joblib numpy pandas
     streamlit run app.py
 
-Ogni modello deve essere un file .pkl o .joblib salvato con pickle/joblib,
-allenato solo su Morgan fingerprint (2048 bit, raggio 2).
+Each model must be a .pkl or .joblib file saved with pickle/joblib,
+trained only on Morgan fingerprint (2048 bit, radius 2).
 """
 
 import streamlit as st
@@ -23,16 +23,15 @@ from rdkit.Chem import rdMolDescriptors
 st.set_page_config(page_title="QSAR Predictor", layout="wide")
 
 # ----------------------------------------------------------------------
-# 1. CARICAMENTO MODELLI
+# 1. MODELS UPLOAD
 # ----------------------------------------------------------------------
-# 4 modelli sullo stesso target/dataset, con splitting e algoritmo diversi.
-# Metti i file .pkl/.joblib in una cartella "models/" accanto a questo script,
-# oppure aggiorna i path qui sotto.
+# 4 models on the same dataset, with different splitting and algorithms
+
 MODELS = {
-    "Modello 1 - Random split": "models/randomforest_random_split.pkl",
-    "Modello 2 - Scaffold split": "models/randomforest_scaffold_split.pkl",
-    "Modello 3 - Temporal split": "models/knn_random_split.pkl",
-    "Modello 4 - Cluster split": "models/knn_scaffold_split.pkl",
+    "Model 1 - Random split, Random Forest": "models/randomforest_random_split.pkl",
+    "Model 2 - Scaffold split, Random Forest": "models/randomforest_scaffold_split.pkl",
+    "Model 3 - Random split, K-Nearest Neighbors": "models/knn_random_split.pkl",
+    "Model 4 - Scaffold split, K-Nearest Neighbors": "models/knn_scaffold_split.pkl",
 }
 
 
@@ -47,7 +46,7 @@ def load_model(path: str):
             return pickle.load(f)
 
 # ----------------------------------------------------------------------
-# 2. CALCOLO FEATURE (solo Morgan FP 2048 bit r=2)
+# 2. cOMPUTE FEATURE (Morgan FP 2048 bit r=2)
 # ----------------------------------------------------------------------
 FP_BITS = 2048
 FP_RADIUS = 2
@@ -68,24 +67,24 @@ def compute_features(smiles: str) -> np.ndarray | None:
 
 
 # ----------------------------------------------------------------------
-# 3. INTERFACCIA
+# 3. GUI
 # ----------------------------------------------------------------------
 st.title("🧪 QSAR Predictor")
-st.caption("Disegna una molecola in Ketcher e confronta la predizione tra i 4 modelli.")
+st.caption("Draw a molecule in Ketcher and compare the prediction obtained from 4 models")
 
-st.subheader("Scegli il modello")
-selected_name = st.selectbox("Modello", list(MODELS.keys()))
+st.subheader("Choose model")
+selected_name = st.selectbox("Model", list(MODELS.keys()))
 model_path = MODELS[selected_name]
 model = load_model(model_path)
 
 if model is None:
     st.warning(
-        f"⚠️ Nessun modello trovato in `{model_path}`. "
-        "Copia il file .pkl/.joblib in `models/` con quel nome (o aggiorna il path in MODELS), "
-        "oppure caricalo qui sotto per questa sessione."
+        f"⚠️ No model found in `{model_path}`."
+        "Copy the .pkl/.joblib file in `models/` with that name (or update the path in MODELS), "
+        "or upload it here for the current session."
     )
     uploaded_model = st.file_uploader(
-        f"Carica '{selected_name}' (.pkl / .joblib)", type=["pkl", "joblib"], key=selected_name
+        f"Upload '{selected_name}' (.pkl / .joblib)", type=["pkl", "joblib"], key=selected_name
     )
     if uploaded_model is not None:
         try:
@@ -93,32 +92,32 @@ if model is None:
         except Exception:
             uploaded_model.seek(0)
             model = pickle.load(uploaded_model)
-        st.success("Modello caricato correttamente per questa sessione.")
+        st.success("Model uploaded successfully for the current session.")
 
 col_editor, col_result = st.columns([2, 1])
 
 with col_editor:
-    st.subheader("Disegna la molecola")
+    st.subheader("Draw the molecule")
     smiles = st_ketcher("", height=500)
 
 with col_result:
-    st.subheader("Risultato")
+    st.subheader("Result")
 
     if not smiles:
-        st.info("Disegna una struttura e clicca su 'Apply' in Ketcher per generare lo SMILES.")
+        st.info("Draw a structure and click 'Apply' in Ketcher to generate the SMILES.")
     else:
         st.code(smiles, language="text")
         mol = Chem.MolFromSmiles(smiles)
 
         if mol is None:
-            st.error("SMILES non valido: controlla la struttura disegnata.")
+            st.error("Invalid SMILES: check the structure.")
         elif model is None:
-            st.warning("Carica prima un modello per ottenere la predizione.")
+            st.warning("Upload a model first to get a prediction.")
         else:
             features = compute_features(smiles)
             try:
                 prediction = model.predict(features)[0]
-                st.metric("Predizione (pIC50 / valore target)", f"{prediction:.3f}")
+                st.metric("Prediction (pIC50)", f"{prediction:.3f}")
 
                 # Se il modello lo supporta, mostra anche un intervallo di
                 # confidenza approssimato dalla varianza tra gli alberi RF
