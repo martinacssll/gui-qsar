@@ -28,10 +28,10 @@ st.set_page_config(page_title="QSAR Predictor", layout="wide")
 # 4 models on the same dataset, with different splitting and algorithms
 
 MODELS = {
-    "Model 1 - Random split, Random Forest": "models/randomforest_random_split.pkl",
-    "Model 2 - Scaffold split, Random Forest": "models/randomforest_scaffold_split.pkl",
-    "Model 3 - Random split, K-Nearest Neighbors": "models/knn_random_split.pkl",
-    "Model 4 - Scaffold split, K-Nearest Neighbors": "models/knn_scaffold_split.pkl",
+    "Model 1 - Random split, Random Forest": "models/RS_RF.pkl",
+    "Model 2 - Scaffold split, Random Forest": "models/SS_RF.pkl",
+    "Model 3 - Random split, K-Nearest Neighbors": "models/RS_KNN.pkl",
+    "Model 4 - Scaffold split, K-Nearest Neighbors": "models/SS_KNN.pkl",
 }
 
 
