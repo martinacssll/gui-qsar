@@ -24,6 +24,8 @@ on the same molecule.
 ```bash
 streamlit run app.py
 ```
+or
+https://gui-qsar.streamlit.app/
 
 It opens in the browser: draw the molecule, press **Apply** in
 Ketcher to confirm the structure, and the prediction is shown on the right.
