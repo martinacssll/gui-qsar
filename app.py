@@ -79,7 +79,7 @@ model = load_model(model_path)
 
 if model is None:
     st.warning(
-        f"⚠️ No model found in `{model_path}`."
+        f"⚠️ No model found in `{model_path}`. "
         "Copy the .pkl/.joblib file in `models/` with that name (or update the path in MODELS), "
         "or upload it here for the current session."
     )
@@ -119,32 +119,22 @@ with col_result:
                 prediction = model.predict(features)[0]
                 st.metric("Prediction (pIC50)", f"{prediction:.3f}")
 
-                # Se il modello lo supporta, mostra anche un intervallo di
-                # confidenza approssimato dalla varianza tra gli alberi RF
-                if hasattr(model, "estimators_"):
-                    tree_preds = np.array(
-                        [tree.predict(features)[0] for tree in model.estimators_]
-                    )
-                    st.caption(
-                        f"Deviazione standard tra gli alberi: {tree_preds.std():.3f} "
-                        f"(min {tree_preds.min():.3f} · max {tree_preds.max():.3f})"
-                    )
             except Exception as e:
-                st.error(f"Errore durante la predizione: {e}")
+                st.error(f"Error during prediction: {e}")
                 st.caption(
-                    "Controlla che l'ordine e il numero di feature calcolate "
-                    "corrispondano a quelle usate in fase di training."
+                    "Ensure that the order and number of calculated features "
+                    "correspond to those used during training."
                 )
 
-            if mol is not None and st.checkbox("Confronta tutti e 4 i modelli"):
+            if mol is not None and st.checkbox("Compare all 4 models"):
                 comparison = {}
                 for name, path in MODELS.items():
                     m = load_model(path)
                     if m is None:
-                        comparison[name] = "modello non trovato"
+                        comparison[name] = "model not found"
                         continue
                     try:
                         comparison[name] = round(float(m.predict(features)[0]), 3)
                     except Exception as e:
-                        comparison[name] = f"errore: {e}"
+                        comparison[name] = f"error: {e}"
                 st.table(comparison)
